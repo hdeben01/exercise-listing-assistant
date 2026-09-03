@@ -1,0 +1,122 @@
+<section class="assistant-container">
+  <!-- Error State Alert Slot -->
+  @if (errorMessage()) {
+    <div class="alert alert-error" role="alert">
+      <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+      <div class="alert-content">
+        <strong>Error:</strong> {{ errorMessage() }}
+      </div>
+    </div>
+  }
+
+  <!-- AI Input Prompt Card -->
+  <section class="card ai-prompt-card" aria-label="Item description prompt">
+    <div class="input-container">
+      <label for="raw-description-input" class="sr-only">Raw item description</label>
+      <textarea
+        #promptInput
+        id="raw-description-input"
+        class="prompt-textarea"
+        rows="1"
+        [placeholder]="rawDescription()"
+        (input)="onInput($event)"
+      ></textarea>
+    </div>
+
+    <button
+      type="button"
+      class="btn btn-primary prompt-submit-btn"
+      [disabled]="status() === 'loading'"
+      (click)="onSubmit()"
+    >
+      @if (status() === 'loading') {
+        <span class="spinner" aria-hidden="true"></span>
+        <span>Generating...</span>
+      } @else {
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3z"/>
+        </svg>
+        <span>Generate Suggestions</span>
+      }
+    </button>
+  </section>
+
+  <!-- Loading State Slot -->
+  @if (status() === 'loading') {
+    <section class="card state-card" role="status">
+      <div class="state-container">
+        <div class="spinner spinner-primary loading-spinner"></div>
+        <p class="state-title">Generating suggestions...</p>
+      </div>
+    </section>
+  }
+
+  <!-- Results Card -->
+  @if (suggestion()) {
+    <section class="card results-card" aria-label="AI listing suggestions">
+      <div class="suggestions-content">
+        <!-- Suggested Title -->
+        <div class="result-block">
+          <div class="result-block-header">
+            <span class="result-label">Suggested Title</span>
+            <button
+              type="button"
+              class="btn-copy"
+              (click)="copyTitle()"
+              aria-label="Copy title to clipboard"
+            >
+            </button>
+          </div>
+          <div class="title-display-box">
+            <p class="suggested-title-text">{{ suggestion()?.title }}</p>
+          </div>
+        </div>
+
+        <!-- Search Tags -->
+        <div class="result-block">
+          <div class="result-block-header">
+            <span class="result-label">Search Tags ({{ suggestion()?.tags?.length ?? 0 }})</span>
+          </div>
+          <div class="tags-chip-list">
+            @for (tag of suggestion()?.tags; track tag) {
+              <span class="chip tag-chip">
+                <span class="tag-hash">#</span>{{ tag }}
+              </span>
+            }
+          </div>
+        </div>
+
+        <!-- Suggested Price Range -->
+        <div class="result-block">
+          <div class="result-block-header">
+            <span class="result-label">Suggested Price Range</span>
+          </div>
+          <div class="price-range-container">
+            <div class="price-card">
+              <span class="price-type">Minimum</span>
+              <span class="price-value">
+                {{ suggestion()?.priceRange?.min }}{{ suggestion()?.priceRange?.currency }}
+              </span>
+            </div>
+
+            <div class="price-range-separator">
+              <span class="range-dash">to</span>
+            </div>
+
+            <div class="price-card">
+              <span class="price-type">Maximum</span>
+              <span class="price-value">
+                {{ suggestion()?.priceRange?.max }}{{ suggestion()?.priceRange?.currency }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  }
+</section>
+
