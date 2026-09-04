@@ -5,38 +5,33 @@ import {
   afterNextRender,
   signal,
   viewChild,
+  inject
 } from '@angular/core';
-import { AssistantStatus, ListingSuggestion } from './assistant.model';
+import { ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
+import { AssistantStatus, ListingResponse } from '../api/models'
+import { AssistantService } from '../api/assistant-service';
 
 @Component({
   selector: 'app-assistant',
-  imports: [],
+  imports: [ReactiveFormsModule],
   templateUrl: './assistant.html',
   styleUrl: './assistant.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Assistant {
+  private assistantService = inject(AssistantService);
   protected readonly promptInputRef = viewChild<ElementRef<HTMLTextAreaElement>>('promptInput');
 
   // Input state
-  protected readonly rawDescription = signal<string>(
-    'Vintage leather jacket, worn once, size M, black color, perfect condition for autumn/winter.'
+  protected readonly description = new FormControl("",
+    { nonNullable: true, validators: [Validators.maxLength(500)] }
   );
 
   // Status state: 'idle' | 'loading' | 'success' | 'error'
   protected readonly status = signal<AssistantStatus>('idle');
   protected readonly errorMessage = signal<string | null>(null);
-
-  // Suggested listing data (pre-populated with mock data for visual presentation)
-  protected readonly suggestion = signal<ListingSuggestion | null>({
-    title: 'Vintage Genuine Leather Biker Jacket - Size M (Mint Condition)',
-    tags: ['leather jacket', 'vintage', 'biker', 'outerwear', 'size m'],
-    priceRange: {
-      min: 45,
-      max: 75,
-      currency: '€',
-    },
-  });
+  protected readonly suggestion = signal<ListingResponse | null>(null);
+  protected readonly submitted = signal(false);
 
   constructor() {
     afterNextRender(() => {
@@ -47,10 +42,8 @@ export class Assistant {
     });
   }
 
-  protected onInput(event: Event): void {
-    const target = event.target as HTMLTextAreaElement;
-    this.rawDescription.set(target.value);
-    this.adjustHeight(target);
+  protected onInputResize(event: Event): void {
+    this.adjustHeight(event.target as HTMLTextAreaElement);
   }
 
   private adjustHeight(textarea: HTMLTextAreaElement): void {
@@ -62,22 +55,32 @@ export class Assistant {
     textarea.style.height = `${Math.max(48, textarea.scrollHeight)}px`;
   }
 
-  // Action placeholders for consumer implementation
   protected onSubmit(): void {
-    // To be implemented by user logic
-  }
-
-  protected onReset(): void {
-    this.rawDescription.set('');
-    const textarea = this.promptInputRef()?.nativeElement;
-    if (textarea) {
-      textarea.value = '';
-      this.adjustHeight(textarea);
+    this.submitted.set(true);
+    if (this.description.invalid) {
+      return;
     }
+
+    this.status.set('loading');
+    this.assistantService.getListingSuggestion(this.description.value).subscribe({
+      next: (listingResponse) => {
+        this.status.set('success');
+        //Clean the input
+        this.description.setValue("");
+        this.suggestion.set({
+          title: listingResponse.title,
+          tags: listingResponse.tags,
+          minPrice: listingResponse.minPrice,
+          maxPrice: listingResponse.maxPrice,
+        })
+      },
+      error: (err) => {
+        this.status.set('error');
+        console.log(err);
+      }
+    })
   }
 
   protected copyTitle(): void {
-    // To be implemented by user logic
   }
 }
-

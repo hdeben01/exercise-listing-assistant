@@ -1,4 +1,10 @@
 <section class="assistant-container">
+  <section class="assistant-container">
+  <header class="assistant-topbar">
+    <img src="/Wallapop.svg.webp" alt="Wallapop" class="wallapop-logo"/>
+  </header>
+
+  <h1 class="assistant-title">Listing Assistant</h1>
   <!-- Error State Alert Slot -->
   @if (errorMessage()) {
     <div class="alert alert-error" role="alert">
@@ -22,15 +28,25 @@
         id="raw-description-input"
         class="prompt-textarea"
         rows="1"
-        [placeholder]="rawDescription()"
-        (input)="onInput($event)"
+        placeholder="Input a description of your product e.g: Vintage leather jacket, worn once, size M"
+        [formControl]="description"
+        (input)="onInputResize($event)"
       ></textarea>
+      @if (description.invalid && submitted()) {
+        <p class="prompt-error-hint">
+          @if (description.hasError('required')) { Please enter a description. }
+          @if (description.hasError('maxlength')) { Description is too long (max 500 characters). }
+        </p>
+      }
+      @if (status() === 'error') {
+        <p class="prompt-error-hint">Something went wrong, please try again.</p>
+      }
     </div>
 
     <button
       type="button"
       class="btn btn-primary prompt-submit-btn"
-      [disabled]="status() === 'loading'"
+      [disabled]="status() === 'loading' || description.invalid"
       (click)="onSubmit()"
     >
       @if (status() === 'loading') {
@@ -63,13 +79,6 @@
         <div class="result-block">
           <div class="result-block-header">
             <span class="result-label">Suggested Title</span>
-            <button
-              type="button"
-              class="btn-copy"
-              (click)="copyTitle()"
-              aria-label="Copy title to clipboard"
-            >
-            </button>
           </div>
           <div class="title-display-box">
             <p class="suggested-title-text">{{ suggestion()?.title }}</p>
@@ -99,7 +108,7 @@
             <div class="price-card">
               <span class="price-type">Minimum</span>
               <span class="price-value">
-                {{ suggestion()?.priceRange?.min }}{{ suggestion()?.priceRange?.currency }}
+                {{ suggestion()?.minPrice }}€
               </span>
             </div>
 
@@ -110,7 +119,7 @@
             <div class="price-card">
               <span class="price-type">Maximum</span>
               <span class="price-value">
-                {{ suggestion()?.priceRange?.max }}{{ suggestion()?.priceRange?.currency }}
+                {{ suggestion()?.maxPrice}}€
               </span>
             </div>
           </div>

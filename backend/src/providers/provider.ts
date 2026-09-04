@@ -1,5 +1,5 @@
 import type { Listing } from "../models.ts";
 
 export interface Provider {
-    processDescription(description: string): Promise<Listing>;
+    processDescription(description: string): Promise<string | undefined>;
 }

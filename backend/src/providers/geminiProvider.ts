@@ -11,9 +11,9 @@ export class GeminiProvider implements Provider{
 
     }
 
-    async processDescription(description: string): Promise<Listing> {
+    async processDescription(description: string): Promise<string | undefined> {
         const response =  await this.ai.models.generateContent({
-            model: "gemini-3.5-flash-lite",
+            model: "gemini-3.1-flash-lite",
             contents: [
                 {
                 role: "user",
@@ -71,6 +71,6 @@ export class GeminiProvider implements Provider{
                 },
             },
         });
-        return JSON.parse(response.text!) as Listing;
+        return response.text;
     }
 }

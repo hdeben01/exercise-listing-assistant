@@ -1,11 +1,26 @@
-import { Router, type Request, type Response } from 'express';
+import { Router, type NextFunction, type Request, type Response } from 'express';
 import { type Provider } from '../providers/provider.ts';
 import { GeminiProvider } from '../providers/geminiProvider.ts';
 import { type ListingRequest, type ListingResponse, type Listing } from '../models.ts';
 import { MockProvider } from '../providers/mockProvider.ts';
+import { ModelResponseError, validateModelResponse } from '../modelResponseValidator.ts';
 const router = Router();
 
-router.post('/', (req: Request, res: Response) => {
+function listingRequestValidator(req: Request, res: Response, next: NextFunction){
+
+    if(!req.headers['content-type']?.includes('application/json')){
+        return res.status(415).send("Content-Type must be application/json");
+    }
+    
+    if(!req.body || typeof req.body !== 'object' || 
+        typeof req.body.description !== 'string' || req.body.description.trim().length === 0){
+        return res.status(400).send("The request body must be an object containing a non-empty 'description' string.");
+    }
+    next();
+    
+}
+
+router.post('/', listingRequestValidator, async (req: Request, res: Response, next: NextFunction) => {
     let provider: Provider;
     if(process.env.MODE == 'MOCK'){
         provider = new MockProvider;
@@ -15,14 +30,18 @@ router.post('/', (req: Request, res: Response) => {
     }
 
     const parsedRequest = req.body as ListingRequest;
-        let aiResponse: Listing;
-        provider.processDescription(parsedRequest.description).then((listing) => {
-            aiResponse = listing;
-            return res.status(200).send(aiResponse as ListingResponse);
-        }).catch((err) =>{
-            console.log(err);
-            return res.status(500).send("Something went wrong");
-        });
+    try{
+        const aiResponse: string | undefined = await provider.processDescription(parsedRequest.description);
+        const parsedResponse: ListingResponse = validateModelResponse(aiResponse);
+        res.status(200).send(parsedResponse);
+    }catch(err){
+        if(err instanceof ModelResponseError){
+            res.status(502).send("There was an error generating suggestions. Please try again");
+        }
+        next(err);
+    }
 });
+
+
 
 export default router;
