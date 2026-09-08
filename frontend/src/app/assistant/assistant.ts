@@ -56,7 +56,7 @@ export class Assistant {
       text: 'Ikea desk lamp, working perfectly, minor scratch on base',
     },
     {
-      simulation: 'API error like service unavailability',
+      simulation: 'API error, like service unavailability',
       type: 'error' as const,
       text: 'Old bicycle for parts, flat tires, rusty chain',
     },
@@ -100,13 +100,13 @@ export class Assistant {
     }
 
     this.status.set('loading');
+    this.suggestion.set(null);
     this.assistantService.getListingSuggestion(this.description.value).subscribe({
       next: (listingResponse) => {
         this.status.set('success');
         //Clean the input
         this.description.setValue("");
         this.adjustHeight(this.promptInputRef()?.nativeElement!);
-        console.log(JSON.stringify(listingResponse, null, 2));
         this.suggestion.set({
           title: listingResponse.title,
           tags: listingResponse.tags,

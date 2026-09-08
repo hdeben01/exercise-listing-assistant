@@ -5,35 +5,26 @@
 
   <h1 class="assistant-title">Listing Assistant</h1>
 
-  <!-- Mock Descriptions Panel (Visible only when mockMode is true) -->
+  <!-- Mock Descriptions Row (Visible only when mockMode is true) -->
   @if (mockMode()) {
-    <section class="mock-descriptions-panel" aria-label="Mock test descriptions">
-      <div class="mock-panel-header">
-        <span class="mock-mode-badge">MOCK MODE</span>
-        <span class="mock-panel-subtitle">Select a scenario to test:</span>
-      </div>
-      <div class="mock-cards-grid">
+    <div class="mock-chips-bar" aria-label="Mock test descriptions">
+      <span class="mock-mode-badge">MOCK</span>
+      <div class="mock-chips-scroll">
         @for (mock of mockDescriptions; track mock.text) {
           <button
             type="button"
-            class="mock-card-btn"
+            class="mock-chip"
             [class.active]="description.value === mock.text"
+            [class.success]="mock.type === 'success'"
+            [class.error]="mock.type === 'error'"
+            [title]="mock.text"
             (click)="selectMockDescription(mock.text)"
           >
-            <div class="mock-card-top">
-              <span
-                class="mock-status-pill"
-                [class.success]="mock.type === 'success'"
-                [class.error]="mock.type === 'error'"
-              >
-                {{ mock.simulation }}
-              </span>
-            </div>
-            <p class="mock-prompt-text">{{ mock.text }}</p>
+            {{ mock.simulation }}
           </button>
         }
       </div>
-    </section>
+    </div>
   }
 
   <!-- AI Input Prompt Card -->
@@ -71,16 +62,6 @@
       }
     </button>
   </section>
-
-  <!-- Loading State Slot -->
-  @if (status() === 'loading') {
-    <!--<section class="card state-card" role="status">
-      <div class="state-container">
-        <div class="spinner spinner-primary loading-spinner"></div>
-        <p class="state-title">Generating suggestions...</p>
-      </div>
-    </section>-->
-  }
 
   <!-- Results Card -->
   @if (suggestion()) {

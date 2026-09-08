@@ -26,15 +26,17 @@ describe('MockProvider', () => {
             testInputs.push(`fuzzed-input-${i}-${Math.random()}`);
         }
 
-        for (const input of testInputs) {
-            try {
-                const result = await provider.processDescription(input);
-                expect(possibleStrings).toContain(result);
-            } catch (err) {
-                expect(err).toBeInstanceOf(Error);
-                expect(possibleErrors.map(e => e.message)).toContain((err as Error).message);
-            }
-        }
+        await Promise.all(
+            testInputs.map(async (input) => {
+                try {
+                    const result = await provider.processDescription(input);
+                    expect(possibleStrings).toContain(result);
+                } catch (err) {
+                    expect(err).toBeInstanceOf(Error);
+                    expect(possibleErrors.map((e) => e.message)).toContain((err as Error).message);
+                }
+            })
+        );
     });
 
 });

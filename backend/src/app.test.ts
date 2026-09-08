@@ -4,7 +4,47 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mode = process.env.TEST_MODE;
 const shouldRunMock = !mode || mode  === 'ALL' || mode === 'MOCK';
-const shouldRunApi = !mode || mode === 'ALL' || mode === 'API';
+const shouldRunApi = mode === 'ALL' || mode === 'API';
+
+// General tests for both modes
+describe('POST /api/assistant', () => {
+    it('returns 415 when Content-Type is not application/json', async () => {
+        const res = await request(app)
+            .post('/api/assistant')
+            .set('Content-Type', 'text/plain')
+            .send('Vintage leather jacket');
+        expect(res.status).toBe(415);
+        expect(res.text).toBe('Content-Type must be application/json');
+    });
+
+    it('returns 400 when description is missing from body', async () => {
+        const res = await request(app)
+            .post('/api/assistant')
+            .send({});
+        expect(res.status).toBe(400);
+        expect(res.text).toBe("The request body must be an object containing a non-empty 'description' string.");
+    });
+
+    it('returns 400 when description is not a string', async () => {
+        const res = await request(app)
+            .post('/api/assistant')
+            .send({ description: 12345 });
+        expect(res.status).toBe(400);
+        expect(res.text).toBe("The request body must be an object containing a non-empty 'description' string.");
+    });
+
+    it('returns 400 when description is empty string or only whitespace', async () => {
+        const emptyRes = await request(app)
+            .post('/api/assistant')
+            .send({ description: '' });
+        expect(emptyRes.status).toBe(400);
+
+        const whitespaceRes = await request(app)
+            .post('/api/assistant')
+            .send({ description: '   \n\t  ' });
+        expect(whitespaceRes.status).toBe(400);
+    });
+});
 
 // Specific tests for MOCK mode
 describe.runIf(shouldRunMock)('POST /api/assistant (MOCK)', () => {

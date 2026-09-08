@@ -1,4 +1,4 @@
 export const environment = {
-    apiBaseUrl: 'http://localhost:3000',
-    mode: "api",
+  apiBaseUrl: 'http://localhost:3000',
+  mode: 'mock',
 };
