@@ -32,7 +32,7 @@ export class Assistant {
   protected readonly status = signal<AssistantStatus>('idle');
   protected readonly errorMessage = signal<string | null>(null);
   protected readonly suggestion = signal<ListingResponse | null>(null);
-  protected readonly mockMode = signal<boolean>(false);
+  protected readonly mockMode = signal<boolean>(environment.mode === "mock");
 
   protected readonly mockDescriptions = [
     {
@@ -63,7 +63,6 @@ export class Assistant {
   ];
 
   constructor() {
-    this.mockMode.set(environment.mode === "mock");
     afterNextRender(() => {
       const textarea = this.promptInputRef()?.nativeElement;
       if (textarea) {
@@ -100,13 +99,15 @@ export class Assistant {
     }
 
     this.status.set('loading');
+    this.errorMessage.set(null);
     this.suggestion.set(null);
     this.assistantService.getListingSuggestion(this.description.value).subscribe({
       next: (listingResponse) => {
         this.status.set('success');
-        //Clean the input
-        this.description.setValue("");
-        this.adjustHeight(this.promptInputRef()?.nativeElement!);
+        const textarea = this.promptInputRef()?.nativeElement;
+        if (textarea) {
+          this.adjustHeight(textarea);
+        }
         this.suggestion.set({
           title: listingResponse.title,
           tags: listingResponse.tags,
@@ -122,8 +123,5 @@ export class Assistant {
         console.log(err);
       },
     })
-  }
-
-  protected copyTitle(): void {
   }
 }

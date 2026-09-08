@@ -5,10 +5,18 @@ import type { Listing } from "../models.ts";
 
 export class GeminiProvider implements Provider{
 
+    private static instance: GeminiProvider;
     //Api key is retrieved from environment
     private ai: GoogleGenAI = new GoogleGenAI();
     constructor(){
 
+    }
+
+    static getInstance(): Provider {
+        if(!GeminiProvider.instance){
+            GeminiProvider.instance = new GeminiProvider;
+        }
+        return GeminiProvider.instance;
     }
 
     async processDescription(description: string): Promise<string | undefined> {
@@ -45,11 +53,8 @@ export class GeminiProvider implements Provider{
                                     {
                                     "title": string,
                                     "tags": string[],
-                                    "priceRange": {
-                                        "min": number,
-                                        "max": number,
-                                        "currency": "EUR"
-                                    }
+                                    "minPrice": number,
+                                    "maxPrice": number,
                                     }`,
                 
                 // Enforce JSON schema to match Listing

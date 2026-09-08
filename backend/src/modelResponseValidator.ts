@@ -20,6 +20,8 @@ export function validateModelResponse(aiResponse: string | undefined): ListingRe
             typeof objectAIResponse.title !== 'string' ||
             objectAIResponse.title.trim().length === 0 ||
             !Array.isArray(objectAIResponse.tags) ||
+            objectAIResponse.tags.length < 3 ||
+            objectAIResponse.tags.length > 5 ||
             typeof objectAIResponse.minPrice !== 'number' ||
             typeof objectAIResponse.maxPrice !== 'number' ||
             Number.isNaN(objectAIResponse.minPrice) ||
@@ -35,10 +37,10 @@ export function validateModelResponse(aiResponse: string | undefined): ListingRe
         }
 
         const normalizedTags = objectAIResponse.tags.map((tag: unknown) => {
-            if (typeof tag !== 'string') {
-                throw new ModelResponseError();
+            if (typeof tag === 'string' && tag.trim() !== "") {
+                return tag.trim().toLowerCase();
             }
-            return tag.trim().toLowerCase();
+            throw new ModelResponseError();
         });
 
         return {

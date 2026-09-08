@@ -1,6 +1,8 @@
 import type { Provider } from "./provider.ts";
 
 export class MockProvider implements Provider {
+    private static instance: MockProvider
+
     static readonly RESPONSES: Map<string, string | Error> = new Map<string, string | Error>([
         // Correct
         [
@@ -30,6 +32,13 @@ export class MockProvider implements Provider {
     ]);
 
     constructor() {}
+
+    static getInstance(): Provider {
+        if(!MockProvider.instance){
+            MockProvider.instance = new MockProvider;
+        }
+        return MockProvider.instance;
+    }
 
     async processDescription(description: string): Promise<string> {
         let response = MockProvider.RESPONSES.get(description);

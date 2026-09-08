@@ -4,6 +4,6 @@ import { Assistant } from './assistant/assistant';
 export const routes: Routes = [
     {
         path: '',
-        component: Assistant,
+        loadComponent: () => import('./assistant/assistant').then((m) => m.Assistant),
     },
 ];

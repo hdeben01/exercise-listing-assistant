@@ -55,7 +55,7 @@ describe("modelResponseValidator", () => {
         it("accepts zero as a valid non-negative price boundary", () => {
             const freeItem = JSON.stringify({
                 title: "Free sofa",
-                tags: ["sofa", "furniture"],
+                tags: ["sofa", "furniture", "couch"],
                 minPrice: 0,
                 maxPrice: 0
             });
@@ -67,7 +67,7 @@ describe("modelResponseValidator", () => {
         it("accepts equal minPrice and maxPrice for fixed-price items", () => {
             const fixedPrice = JSON.stringify({
                 title: "Fixed price item",
-                tags: ["vintage", "rare"],
+                tags: ["vintage", "rare", "collectible"],
                 minPrice: 50,
                 maxPrice: 50
             });
@@ -140,15 +140,29 @@ describe("modelResponseValidator", () => {
             expect(() => validateModelResponse(objectTags)).toThrow(ModelResponseError);
         });
 
-        it("accepts an empty tags array", () => {
-            const emptyTags = JSON.stringify({
+        it("throws when tags array size is less than 3 or more than 5", () => {
+            const tooFewZero = JSON.stringify({
                 title: "Test item",
                 tags: [],
                 minPrice: 10,
-                maxPrice: 20
+                maxPrice: 20,
             });
-            const result = validateModelResponse(emptyTags);
-            expect(result.tags).toEqual([]);
+            const tooFewTwo = JSON.stringify({
+                title: "Test item",
+                tags: ["vintage", "leather"],
+                minPrice: 10,
+                maxPrice: 20,
+            });
+            const tooManySix = JSON.stringify({
+                title: "Test item",
+                tags: ["one", "two", "three", "four", "five", "six"],
+                minPrice: 10,
+                maxPrice: 20,
+            });
+
+            expect(() => validateModelResponse(tooFewZero)).toThrow(ModelResponseError);
+            expect(() => validateModelResponse(tooFewTwo)).toThrow(ModelResponseError);
+            expect(() => validateModelResponse(tooManySix)).toThrow(ModelResponseError);
         });
     });
 
@@ -205,7 +219,7 @@ describe("modelResponseValidator", () => {
         it("safely strips extra unexpected fields from the model response", () => {
             const payloadWithExtra = JSON.stringify({
                 title: "Vintage Leather Jacket",
-                tags: ["vintage", "leather"],
+                tags: ["vintage", "leather", "jacket"],
                 minPrice: 40,
                 maxPrice: 80,
                 reasoning: "High-value second hand item",
@@ -215,7 +229,7 @@ describe("modelResponseValidator", () => {
             const result = validateModelResponse(payloadWithExtra);
             expect(result).toEqual({
                 title: "Vintage Leather Jacket",
-                tags: ["vintage", "leather"],
+                tags: ["vintage", "leather", "jacket"],
                 minPrice: 40,
                 maxPrice: 80
             });

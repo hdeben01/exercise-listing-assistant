@@ -78,7 +78,6 @@ describe('Assistant', () => {
 
     expect(component['status']()).toBe('success');
     expect(component['suggestion']()).toEqual(sampleListing);
-    expect(component['description'].value).toBe(''); 
   });
 
   it('should handle 502 Bad Gateway error and set error state', () => {

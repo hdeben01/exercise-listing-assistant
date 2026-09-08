@@ -6,6 +6,7 @@ import { MockProvider } from '../providers/mockProvider.ts';
 import { ModelResponseError, validateModelResponse } from '../modelResponseValidator.ts';
 const router = Router();
 
+
 function listingRequestValidator(req: Request, res: Response, next: NextFunction){
 
     if(!req.headers['content-type']?.includes('application/json')){
@@ -22,11 +23,12 @@ function listingRequestValidator(req: Request, res: Response, next: NextFunction
 
 router.post('/', listingRequestValidator, async (req: Request, res: Response, next: NextFunction) => {
     let provider: Provider;
-    //By default uses api
+    // By default uses MOCK
+    // This should be done with dependency injection
     if(process.env.MODE == 'API'){
-        provider = new GeminiProvider;
+        provider = GeminiProvider.getInstance();
     }else{
-        provider = new MockProvider;
+        provider = MockProvider.getInstance();
         
     }
 
