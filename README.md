@@ -1,21 +1,28 @@
 # Exercise Listing Assistant
-This is the Exercise Listing Assistant for Wallapop Interview.
+This is the Listing Assistant for the Wallapop Interview.
 
-The application consists of a full stack app made with Angular for the frontend and Node.js (express) for the backend, the model used is Gemini for listing suggestions generation.
+The application consists of a full stack app made with Angular for the frontend and Node.js (express) for the backend, the model used is Gemini for generation of listing suggestions.
 
 # Features
 
-When given an item description it returns a suggestion with:
+Given a rough item description from a seller, the assistant generates structured listing recommendations:
 
-- A better listing title
-- 3-5 search tags
-- A suggested price range
+- **Title**: A clear, optimized product title.
+- **Search Tags**: 3 to 5 lowercase, search keywords.
+- **Price Range**: Minimum and maximum value estimates.
 
-The application is divided in two modes, the API mode where the backend uses the Gemini model for suggestions generation
+The application operates in two distinct modes:
+
+### API Mode
+Connects directly to Google's Gemini model to generate live AI suggestions for any custom item description.
 
 ![App in API mode](docs/API_Example.png)
 
-And the Mock mode, which adds some pregenerated inputs and responses (with errors) so the application can be executed without an API_KEY, the examples consist of two situations where the response is correct, and other 3 different situations where the output of the model is incorrect. If a custom input is written in mock mode, the backend will select one random pregenerated response and return it (including errors)
+### Mock Mode
+Enables full testing without requiring a `GEMINI_API_KEY`. It includes interactive scenario pills in the UI:
+- **Success Scenarios (2)**: Returns valid, structured listing suggestions.
+- **Error Edge Cases (3)**: Tests resilience against malformed JSON, invalid price logic (`minPrice > maxPrice`), and simulated upstream service outages (`503`).
+- **Custom Inputs**: Typing a custom description randomly returns one of the mock responses or simulated errors.
 
 ![App in MOCK mode](docs/MOCK_Example.png)
 
