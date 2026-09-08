@@ -139,3 +139,8 @@ npm test -- --watch=false
 # Or run tests in interactive watch mode
 npm test
 ```
+
+# What to do next
+- Improve testing and model behaviour.
+# Time Spent
+- Around 9-10 hours.
