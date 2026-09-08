@@ -22,10 +22,11 @@ function listingRequestValidator(req: Request, res: Response, next: NextFunction
 
 router.post('/', listingRequestValidator, async (req: Request, res: Response, next: NextFunction) => {
     let provider: Provider;
-    if(process.env.MODE == 'MOCK'){
-        provider = new MockProvider;
-    }else{
+    //By default uses api
+    if(process.env.MODE == 'API'){
         provider = new GeminiProvider;
+    }else{
+        provider = new MockProvider;
         
     }
 
@@ -36,7 +37,8 @@ router.post('/', listingRequestValidator, async (req: Request, res: Response, ne
         res.status(200).send(parsedResponse);
     }catch(err){
         if(err instanceof ModelResponseError){
-            res.status(502).send("There was an error generating suggestions. Please try again");
+            console.log(err);
+            return res.status(502).send("There was an error generating suggestions. Please try again.");
         }
         next(err);
     }

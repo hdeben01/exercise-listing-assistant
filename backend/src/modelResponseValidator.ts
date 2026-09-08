@@ -2,7 +2,7 @@ import type { ListingResponse } from "./models.ts";
 
 export class ModelResponseError extends Error {
     constructor(){
-        super("Model response does not match the listing format");
+        super("ModelResponseError: response does not match the listing format");
         this.name = "ModelResponseError";
     }
 }
@@ -27,6 +27,10 @@ export function validateModelResponse(aiResponse: string | undefined): ListingRe
             objectAIResponse.minPrice < 0 ||
             objectAIResponse.maxPrice < 0
         ) {
+            throw new ModelResponseError();
+        }
+
+        if(objectAIResponse.minPrice > objectAIResponse.maxPrice){
             throw new ModelResponseError();
         }
 

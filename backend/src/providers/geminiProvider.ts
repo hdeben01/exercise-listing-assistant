@@ -52,7 +52,7 @@ export class GeminiProvider implements Provider{
                                     }
                                     }`,
                 
-                // Enforce JSON to match Listing
+                // Enforce JSON schema to match Listing
                 responseMimeType: "application/json",
                 responseSchema: {
                 type: Type.OBJECT,
