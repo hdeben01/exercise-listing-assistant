@@ -38,10 +38,8 @@ export class GeminiProvider implements Provider{
                                     Given a rough item description from a seller, you must generate:
                                     1. "title": A clear, attractive, high-converting listing title (aim for 40-70 characters; include brand, model, size, or condition if inferrable).
                                     2. "tags": An array of exactly 3 to 5 relevant search tags/keywords in lowercase (no hashtags, just search terms buyers would type).
-                                    3. "priceRange": A realistic second-hand marketplace price range in Euros (EUR), with:
-                                    - "min": Lower bound integer estimate.
-                                    - "max": Upper bound integer estimate (must be >= min).
-                                    - "currency": Always "EUR".
+                                    3. "minPrice": Lower bound realistic second-hand marketplace price estimate in Euros (EUR) as an integer (must be >= 0).
+                                    4. "maxPrice": Upper bound realistic second-hand marketplace price estimate in Euros (EUR) as an integer (must be >= minPrice).
 
                                     Rules & Guardrails:
                                     - Respond strictly with a valid JSON object matching the requested schema.
