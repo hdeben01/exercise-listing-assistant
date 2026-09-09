@@ -107,9 +107,9 @@ npm run api    # API mode (clean UI for live Gemini generations)
 
 Once both servers are running, open your browser and navigate to:
 
-👉 **[http://localhost:4200](http://localhost:4200)**
+**[http://localhost:4200](http://localhost:4200)**
 
-- **Mock Mode**: Click any of the scenario pills to test simulated success cases, error handling, and formatting rules without consuming API quota.
+- **Mock Mode**: Click any of the scenario pills to test simulated success cases, error handling, and formatting rules without consuming API.
 - **API Mode**: Type any product description (e.g. *"Vintage leather jacket, worn once, size M"*) and click **Generate Suggestions** to receive live AI recommendations.
 
 > **Note**: Mock mode is enabled by default across both apps. While they will still work if configured differently, running both in Mock mode ensures that the scenario chips (especially simulated error cases) behave as expected.
