@@ -112,6 +112,8 @@ Once both servers are running, open your browser and navigate to:
 - **Mock Mode**: Click any of the scenario pills to test simulated success cases, error handling, and formatting rules without consuming API quota.
 - **API Mode**: Type any product description (e.g. *"Vintage leather jacket, worn once, size M"*) and click **Generate Suggestions** to receive live AI recommendations.
 
+> **Note**: Mock mode is enabled by default across both apps. While they will still work if configured differently, running both in Mock mode ensures that the scenario chips (especially simulated error cases) behave as expected.
+
 # Test coverage
 
 - **Backend**: Unit tests for `modelResponseValidator` (core domain rules and schema validation), `MockProvider` (fuzzed responses and simulated delay), and API endpoint integration tests in `app.test.ts` (request validation, status codes, and error handling).
