@@ -1,7 +1,8 @@
 # Exercise Listing Assistant
-This is the Listing Assistant for the Wallapop Interview.
 
-The application consists of a full stack app made with Angular for the frontend and Node.js (express) for the backend, the model used is Gemini for generation of listing suggestions.
+This is the Listing Assistant project for the Wallapop technical interview.
+
+It is a full-stack application built with Angular for the frontend and Node.js (Express) for the backend, using Google's Gemini model to generate second-hand listing suggestions.
 
 # Features
 
@@ -28,12 +29,21 @@ Enables full testing without requiring a `GEMINI_API_KEY`. It includes interacti
 
 # Requirements
 
-- **Node.js**: `>= 22.6.0` (Recommended: `v22.x` LTS)
+- **Node.js**: `>= 22.18.0` (Recommended: `v22.x` LTS)
 - **npm**: `>= 10.0.0` (Recommended: `10.9.x`)
 
 # Getting started
 
-### 1. Backend Setup
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/hdeben01/exercise-listing-assistant.git
+cd exercise-listing-assistant
+```
+
+---
+
+### 2. Backend Setup
 
 Open a terminal and navigate to the `backend` directory:
 
@@ -71,7 +81,7 @@ The backend server will start on `http://localhost:3000`.
 
 ---
 
-### 2. Frontend Setup
+### 3. Frontend Setup
 
 Open a second terminal and navigate to the `frontend` directory:
 
@@ -93,7 +103,7 @@ npm run api    # API mode (clean UI for live Gemini generations)
 
 ---
 
-### 3. Open the Application
+### 4. Open the Application
 
 Once both servers are running, open your browser and navigate to:
 
@@ -107,7 +117,7 @@ Once both servers are running, open your browser and navigate to:
 - **Backend**: Unit tests for `modelResponseValidator` (core domain rules and schema validation), `MockProvider` (fuzzed responses and simulated delay), and API endpoint integration tests in `app.test.ts` (request validation, status codes, and error handling).
 - **Frontend**: Component tests for the `Assistant` page using `HttpTestingController` to mock HTTP responses and verify UI behavior, form states, and error alerts.
 
-These tests cover the main functionality of the application. With more time, additional tests could be added for `GeminiProvider` and the `listingRequestValidator` (backend) and `AssistantService` (frontend), as well as end-to-end (E2E) tests.
+These tests cover the main functionality of the application. With more time, additional tests could be added for `GeminiProvider` and the `listingRequestValidator` (backend) and `AssistantService` (frontend), as well as integration and end-to-end (E2E) tests.
 
 ### Running Backend Tests
 

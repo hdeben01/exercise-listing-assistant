@@ -24,7 +24,7 @@ export class MockProvider implements Provider {
             "Ikea desk lamp, working perfectly, minor scratch on base",
             `{"title": "Ikea Desk Lamp - Working Condition", "tags": ["desk lamp", "ikea", "lighting"], "minPrice": 50, "maxPrice": 20}`
         ],
-        // Api error, like service unavailability
+        // Service Unavailable
         [
             "Old bicycle for parts, flat tires, rusty chain",
             new Error("Gemini API Error: 503 Service Unavailable / Rate limit exceeded")

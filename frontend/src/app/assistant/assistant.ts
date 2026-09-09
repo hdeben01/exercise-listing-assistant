@@ -56,7 +56,7 @@ export class Assistant {
       text: 'Ikea desk lamp, working perfectly, minor scratch on base',
     },
     {
-      simulation: 'API error, like service unavailability',
+      simulation: 'Service Unavailable',
       type: 'error' as const,
       text: 'Old bicycle for parts, flat tires, rusty chain',
     },
